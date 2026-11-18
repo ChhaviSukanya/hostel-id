@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment: { POSTGRES_USER: hostel, POSTGRES_PASSWORD: hostelpw, POSTGRES_DB: hostel }
+    volumes: [pgdata:/var/lib/postgresql/data]
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://hostel:hostelpw@db:5432/hostel
+    depends_on: [db]
+    ports: ["8000:8000"]
+    volumes: [appdata:/data]
+volumes: { pgdata: {}, appdata: {} }
